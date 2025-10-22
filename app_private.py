@@ -112,12 +112,10 @@ def load_csv_safe(path: str, cols: t.List[str]) -> pd.DataFrame:
     except Exception:
         return pd.DataFrame(columns=cols)
 
-
 def save_csv_safe(df: pd.DataFrame, path: str) -> None:
     tmp = f"{path}.tmp"
     df.to_csv(tmp, index=False, encoding="utf-8")
     os.replace(tmp, path)
-
 
 # ------------------------------------------------------------------------------
 # 4) Načítanie zoznamu potravín
@@ -132,7 +130,6 @@ def load_products() -> pd.DataFrame:
     df["category"] = df["category"].fillna("Potraviny").astype(str).str.strip()
     df["unit"] = df["unit"].fillna("ks").astype(str).str.strip()
     return df[df["item"] != ""]
-
 
 # ------------------------------------------------------------------------------
 # 5) OCR / Parsovanie účteniek
