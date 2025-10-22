@@ -31,7 +31,8 @@ STOCK_CSV     = os.path.join(DATA_DIR, "stock.csv")           # aktuálne zásob
 GROCERIES_CSV = os.path.join(DATA_DIR, "seznam_potravin_appka.csv")  # katalóg
 SETTINGS_JSON = os.path.join(DATA_DIR, "settings.json")
 
-os.makedirs(DATA_DIR, exist_ok=True)
+if not os.path.exists(DATA_DIR):
+    os.markedirs(DATA_DIR)
 
 def _ensure_csv(path: str, columns: List[str]):
     if not os.path.exists(path):
