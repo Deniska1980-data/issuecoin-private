@@ -1,2 +1,10 @@
-data/.gitkeep
-  
+issuecoin-private/
+│
+├── app.py
+├── requirements.txt
+├── README.md
+├── .secrets
+│
+└── data/
+    └── groceries.xlsx   ← sem uložíš tvoj Excel s potravinami
+
