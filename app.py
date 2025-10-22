@@ -35,7 +35,7 @@ if not os.path.exists(DATA_DIR):
     os.markedirs(DATA_DIR, exist_ok=True)
 
 def _ensure_csv(path: str, columns: List[str]):
-    if not os.path.exists(purchases_csv):
+    if not os.path.exists(path):
         pd.DataFrame(columns=columns).to_csv(path, index=False, encoding="utf-8")
 
 _ensure_csv(PURCHASES_CSV, ["date","item","qty","unit","price_total","currency","store","category","note"])
