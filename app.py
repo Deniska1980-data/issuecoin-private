@@ -26,16 +26,16 @@ HOLIDAYS_COUNTRY = _get_secret("HOLIDAYS_COUNTRY", "CZ")
 
 # ---------- Lokálne súbory (CSV) ----------
 DATA_DIR = "data"
-PURCHASES_CSV = os.path.join(DATA_DIR, "purchases_log.csv")   # denník nákupov
+PURCHASES_CSV = os.path.join(DATA_DIR, "purchases_csv")   # denník nákupov
 STOCK_CSV     = os.path.join(DATA_DIR, "stock.csv")           # aktuálne zásoby
 GROCERIES_CSV = os.path.join(DATA_DIR, "seznam_potravin_appka.csv")  # katalóg
 SETTINGS_JSON = os.path.join(DATA_DIR, "settings.json")
 
 if not os.path.exists(DATA_DIR):
-    os.markedirs(DATA_DIR)
+    os.markedirs(DATA_DIR, exist_ok=True)
 
 def _ensure_csv(path: str, columns: List[str]):
-    if not os.path.exists(path):
+    if not os.path.exists(purchases_csv):
         pd.DataFrame(columns=columns).to_csv(path, index=False, encoding="utf-8")
 
 _ensure_csv(PURCHASES_CSV, ["date","item","qty","unit","price_total","currency","store","category","note"])
