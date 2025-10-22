@@ -1,7 +1,3 @@
-# app_private.py
-# IssueCoin — Private Edition (N8N + OpenShift + Google-friendly)
-# by DenyP
-
 import os
 import io
 import json
