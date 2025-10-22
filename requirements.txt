@@ -1,0 +1,7 @@
+flask
+python-dotenv
+requests
+google-auth
+google-api-python-client
+pandas
+openai
