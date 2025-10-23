@@ -12,17 +12,78 @@ Funguje aj bez OpenAI/Azure:
 """
 
 import io
-import os
 import re
 import json
 import time
 import base64
 import typing as t
 from datetime import datetime, date
+import requests
 
 import pandas as pd
 import streamlit as st
-import requests
+import os
+
+# Cesty k súborom
+csv_path = os.path.join("data", "seznam_potravin_app.csv")
+xlsx_path = os.path.join("data", "seznam_potravin_app.xlsx")
+
+# Načítanie dát
+if os.path.exists(xlsx_path):
+    df = pd.read_excel(xlsx_path)
+elif os.path.exists(csv_path):
+    df = pd.read_csv(csv_path, delimiter=";")
+else:
+    st.error("❌ Súbor s potravinami sa nenašiel v priečinku /data/")
+    st.stop()
+
+# Overenie stĺpcov
+if "nazev_tovaru" not in df.columns or "kategorie" not in df.columns:
+    st.error("⚠️ Súbor nemá požadované stĺpce: 'nazev_tovaru' a 'kategorie'")
+    st.stop()
+
+st.title("🛒 IssueCoin Private – DataPlus (Potraviny)")
+st.caption("Načítané dáta z Excel/CSV. Vyber položky a množstvo.")
+
+# Skupiny podľa kategórie
+kategorie = sorted(df["kategorie"].dropna().unique())
+
+# Výber kategórie
+vybrana_kategoria = st.selectbox("Vyber kategóriu:", kategorie)
+
+# Filtrovanie podľa kategórie
+filtered_df = df[df["kategorie"] == vybrana_kategoria]
+
+# Výber potravín
+vybrane_potraviny = st.multiselect(
+    f"Vyber potraviny z kategórie '{vybrana_kategoria}':",
+    filtered_df["nazev_tovaru"].tolist()
+)
+
+# Zber množstiev
+vysledky = []
+for potravina in vybrane_potraviny:
+    mnozstvo = st.number_input(
+        f"Množstvo pre {potravina}:",
+        min_value=1,
+        step=1,
+        key=f"mnozstvo_{potravina}"
+    )
+    jednotka = filtered_df.loc[filtered_df["nazev_tovaru"] == potravina, "jednotka"].values[0]
+    vysledky.append({"Potravina": potravina, "Množstvo": mnozstvo, "Jednotka": jednotka})
+
+# Výsledná tabuľka
+if vysledky:
+    st.write("### 📊 Tvoj výber:")
+    vysledky_df = pd.DataFrame(vysledky)
+    st.dataframe(vysledky_df, hide_index=True)
+
+    # Uloženie do CSV
+    save_path = os.path.join("data", "vybrane_potraviny.csv")
+    vysledky_df.to_csv(save_path, index=False, encoding="utf-8-sig")
+    st.success(f"💾 Dáta uložené do {save_path}")
+else:
+    st.info("Vyber aspoň jednu položku na zobrazenie tabuľky.")
 
 # Voliteľné / best-effort knižnice (nevadí, ak nie sú)
 try:
